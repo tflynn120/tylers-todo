@@ -1,0 +1,14 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');
+
+h1,h2,h3,p,li,ul,span, button{
+  font-family: Roboto;
+}
+
+label{
+    display: block;
+}
+
+.modal-dialog {
+  max-width: 750px !important;
+  margin: 1.75rem auto;
+}
