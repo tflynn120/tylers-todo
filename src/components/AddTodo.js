@@ -7,21 +7,63 @@ import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import db from '../Firebase/config';
+import {disableWeekends, daysToCompleteTask, setDates} from '../utility/utilityFunctions';
 
 export default function AddTodo( props ) {
 
     const [titleValue, setTitleValue] = useState("");
+    const [category, setCategory] = useState("");
+    const [startDate, setStartDate] = useState("");
     const [dueDate, setDueDate] = useState("");
 
-    const handleSubmit = e => {
+    const handleSubmit = (e) => {
       e.preventDefault();
       if (!titleValue & !dueDate)
         return;
-      props.addTodoFunction(titleValue, dueDate);
-
-      setTitleValue("");
-      setDueDate("");
+      props.addTodoFunction(titleValue, startDate, dueDate, category);
+      stateCleanup()
     };
+
+    const stateCleanup = () => {
+      setTitleValue("");
+      setStartDate("");
+      setDueDate("");
+      setCategory("");
+
+      //ask sam how to do this in utility
+    }
+
+ 
+
+    // const formatDatesToDefault = (dateItem) => {
+    //   const newDueDate = new Date(dateItem * 1000);
+  
+    //   var month = newDueDate.getUTCMonth() + 1; //months from 1-12
+    //   var day = newDueDate.getUTCDate();
+    //   var year = newDueDate.getUTCFullYear();
+  
+    //   const newdate = year + " " + month + " " + day;
+    //   return new Date(newdate);
+    // }
+
+  // const disableWeekends = ({activeStartDate, date, view }) =>
+  //   date.getDay() === 0 || date.getDay() === 6;
+
+  // disableWeekends;
+
+  // const setDates = (e) => {
+  //   const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+  //   setStartDate(new Date(e[0]).toLocaleDateString(undefined, options));
+  //   setDueDate(new Date(e[1]).toLocaleDateString(undefined, options));
+  // }
+
+  // const calculateTimeRemaining = () => {
+  //   console.log("it ran");
+  //   const diffInMs   = new Date(dueDate) - new Date(startDate)
+  //   let diffInDays = diffInMs / (1000 * 60 * 60 * 24);
+  //   diffInDays = diffInDays.toFixed(0)
+  //   return diffInDays;
+  // }
 
     return (
       <form>
@@ -33,13 +75,50 @@ export default function AddTodo( props ) {
             onChange={e => setTitleValue(e.target.value)}
           />
 
-        <label>Due date</label>
-          <input
-            type="text"
-            className="input"
-            value={dueDate}
-            onChange={e => setDueDate(e.target.value)}
-          />
+          <label>Type of skill</label>
+            <select
+              required
+              as="select"
+              onChange={e => setCategory(e.target.value)}>
+
+              <option
+                value="">
+                Select category
+              </option>
+
+              <option
+                value="Technical Skills">
+                Technical Skills
+              </option>
+
+              <option
+                value="Product Analyst Skills">
+                Product Analyst Skills
+              </option>
+
+              <option
+                value="AND Contributions">
+                AND Contributions
+              </option>
+
+              <option
+                value="Personal">
+                Personal
+              </option>
+            </select>
+
+            <Calendar
+                selectRange
+                onChange={e => setDates(setStartDate, setDueDate, e)}
+                returnValue={props.returnValue}
+                tileDisabled={disableWeekends}
+                required>
+            </Calendar>
+
+            <p>Number of days to complete task: {daysToCompleteTask(dueDate, startDate)}</p>
+
+            <h2>Things learned example</h2>
+
       <button onClick={handleSubmit}> add</button>
       </form>
       );

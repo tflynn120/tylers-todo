@@ -10,75 +10,48 @@ import Project from './components/Project';
 import AddProjects from './components/AddProjects';
 import { Container } from 'react-bootstrap';
 import Modal from 'react-bootstrap/Modal';
+import Feedback from './components/Feedback';
 
 
 function App() {
 
-  const [todos, setTodos] = useState([
-    {
-      title: "Learn about React",
-      isCompleted: false,
-      dueDate: "20.02.2020"
-    },
-    {
-      title: "Meet friend for lunch",
-      isCompleted: false,
-      dueDate: "20.02.2020"
-    },
-    {
-      title: "Build really cool todo app",
-      isCompleted: false,
-      dueDate: "20.02.2020"
-    }
-  ]);
-  // const [todos, setTodos] = useState([]);
-  // const [projects, setProjects] = useState([]);
+  const [todos, setTodos] = useState([]);
 
-
-// function Todo({ todo, index, CompleteTodo }) {
-//   return (
-//     <div className="todo" style={{ textDecoration: todo.isCompleted ? "line-through" : "" }}>
-//       {todo.title}
-
-//         <div>
-//           <button onClick={() => completeTodo(index)}>Complete</button>
-//           <button onClick={() => removeTodo(index)}>x</button>
-//         </div>
-//     </div>
-//   );
-// };
-
-  const addTodo = (title, dueDate) => {
+  const addTodo = (title, startDate, dueDate, category) => {
 
     const createdTodo = {
       'title': title,
+      'startDate': startDate,
       'dueDate': dueDate,
-      'isComplete': false
+      'isComplete': false,
+      'category' : category
     }
 
     const newTodos = [...todos,  createdTodo ];
     setTodos(newTodos);
   }
-  const completeTodo = (i) => {
+
+  const completeTodo = (index) => {
     const newTodos = [...todos];
-    newTodos[i].isCompleted = true;
+    newTodos[index].isCompleted = true;
     setTodos(newTodos);
   };
 
-  const removeTodo = (i) => {
+  const removeTodo = (index) => {
     const newTodos = [...todos];
-    newTodos.splice(i, 1);
+    newTodos.splice(index, 1);
     setTodos(newTodos);
   };
 
-  const updateTodo = (i, newTitle) => {
-
-    if (!newTitle)
-      return;
+  const updateTodo = (index, updatedTodo) => {
     const newTodos = [...todos];
-    newTodos[i].title = newTitle;
+    newTodos[index] = updatedTodo;
     setTodos(newTodos);
-  };
+  }
+
+
+
+
 
   // useEffect(() => {
   //   let isCancelled = false;
@@ -137,6 +110,9 @@ function App() {
               <Li>
                 <Link to="/Home">Home</Link>
               </Li>
+              <Li>
+                <Link to="/Feedback">Feedback</Link>
+              </Li>
             </Ul>
           </nav>
           <Container>
@@ -153,6 +129,10 @@ function App() {
                   />
                 ))}
                 <AddTodo addTodoFunction={addTodo} />
+              </Route>
+            
+              <Route>
+                <Feedback />
               </Route>
             </Switch>
           </Container>
