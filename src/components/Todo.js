@@ -16,10 +16,11 @@ export default function Todo(props) {
   } = props;
 
   const [show, setShow] = useState(false);
-  const [newTitle, setNewTitle] = useState("");
-  const [newStartDate, setNewStartDate] = useState("");
-  const [newDueDate, setNewDueDate] = useState("");
-  const [newCategory, setNewCategory] = useState("");
+  const [newTitle, setNewTitle] = useState(todo.title);
+  const [newStartDate, setNewStartDate] = useState(todo.startDate);
+  const [newDueDate, setNewDueDate] = useState(todo.dueDate);
+  const [newCategory, setNewCategory] = useState(todo.category);
+
 
   const editedTodo = {
     'title': newTitle,
@@ -28,35 +29,6 @@ export default function Todo(props) {
     'isComplete': false,
     'category' : newCategory
   }
-
-  console.log(todo);
-
-  // const updateTodo = (itemID) => {
-  //   // e.preventDefault();
-  //   db.collection('todos').doc(itemID.id).set({
-  //     todo: title,
-  //     description: description,
-  //     startDate: startDate,
-  //     dueDate: dueDate
-  //   }, { merge: true})
-  // }
-
-  // const deleteTodo = (todo) => {
-  //   db.collection('todos').doc(todo.id).delete()
-  // }
-
-  // const formatDatesToDefault = (dateItem) => {
-  //   const newDueDate = new Date(dateItem * 1000);
-
-  //   var month = newDueDate.getUTCMonth() + 1; //months from 1-12
-  //   var day = newDueDate.getUTCDate();
-  //   var year = newDueDate.getUTCFullYear();
-
-  //   const newdate = year + " " + month + " " + day;
-  //   return new Date(newdate);
-  // }
-
-  // //brings dates back to regular date format
 
   const timeRemainingOfTask = (todoDueDate) => {
     const diffInMs   = new Date(todoDueDate) - new Date()
@@ -67,60 +39,78 @@ export default function Todo(props) {
 
   return (
     <>
-      <div className="todo" style={{ textDecoration: todo.isCompleted ? "line-through" : "" }} onClick={setShow}>
-          {todo.title}
-          {todo.category}
-          <p>Start Date: {todo.startDate}</p>
-          <p>End Date: {todo.dueDate}</p>
-          <p>{daysToCompleteTask(todo.dueDate, todo.startDate)} Days assigned </p>
-          <p>{timeRemainingOfTask(todo.dueDate)} Days till deadline</p>
+      <div className="todo" style={{ textDecoration: todo.isComplete ? "line-through" : "" }} onClick={setShow}>
+        <h2>{todo.title}</h2>
+        <p>{todo.category}</p>
+        <p>Start Date: {todo.startDate}</p>
+        <p>End Date: {todo.dueDate}</p>
+        <p>{daysToCompleteTask(todo.dueDate, todo.startDate)} Days assigned </p>
+        <p>{timeRemainingOfTask(todo.dueDate)} Days till deadline</p>
       </div>
 
       <div>
         <button onClick={() => completeTodo(index)}>Complete</button>
-        <button onClick={() => removeTodo(index)}>x</button>
+        <button onClick={() => removeTodo(todo)}>x</button>
       </div>
 
-        <Modal
-          show={show}
-          onHide={e => setShow(false)}>
+      <Modal
+        show={show}
+        onHide={e => setShow(false)}>
 
-            <Label>Title: </Label>
-              <InputField
-                defaultValue={todo.title}
-                onChange={e => setNewTitle(e.target.value)}
-              />
+        <Label>Title: </Label>
+          <InputField
+            defaultValue={todo.title}
+            onChange={e => setNewTitle(e.target.value)}
+          />
 
-            <Calendar
-                selectRange
-                onChange={e => setDates(setNewStartDate, setNewDueDate, e)}
-                returnValue={props.returnValue}
-                tileDisabled={disableWeekends}
-                defaultValue={[new Date(todo.startDate), new Date(todo.dueDate)]}
-                required>
-            </Calendar>
+        {/* <label>Type of skill</label>
+          <select
+            required
+            as="select"
+            defaultValue={todo.category}
+            onChange={e => setNewCategory(e.target.value)}>
 
-            <button onClick={() => { updateTodo(index, editedTodo); setShow(false)}}> update todo </button>
+          <option
+            value=""
+            selected
+            disabled=>
+            Select category
+          </option>
 
-        </Modal>
+          <option
+            value="Technical Skills">
+            Technical Skills
+          </option>
 
-    {/* <div className="row" style={{background:"rgb(240 238 238)",margin:"20px"}}>
-      <div className="col-md-8" onClick={handleModalOpen} >
-        <h2>{todoItem.todo}</h2>
-        <p>{todoItem.description}</p>
-        <p>{todoItem.category}</p>
-        <p>{calculateTimeRemaining(todoItem)} Days left</p>
-      </div>
+          <option
+            value="Product Analyst Skills">
+            Product Analyst Skills
+          </option>
 
-      <div className="col-md-4">
-        <p>Created at: {new Date(todoItem.created.seconds * 1000).toLocaleDateString(undefined, options)}</p>
-        <p>Start Date: {new Date(todoItem.start.seconds * 1000).toLocaleDateString(undefined, options)}</p>
-        <p>Due Date: {new Date(todoItem.due.seconds * 1000).toLocaleDateString(undefined, options)}</p>
-        <p>{calculateTimeRemaining(todoItem)} Days left</p>
-        <button onClick={e => handleModalOpen(e)}>Edit</button>
-        <button onClick={e => deleteTodo(todoItem)}>Remove</button>
-      </div>
-    </div> */}
+          <option
+            value="AND Contributions">
+            AND Contributions
+          </option>
+
+          <option
+            value="Personal">
+            Personal
+          </option>
+        </select> */}
+
+
+        <Calendar
+          selectRange
+          onChange={e => setDates(setNewStartDate, setNewDueDate, e)}
+          returnValue={props.returnValue}
+          tileDisabled={disableWeekends}
+          defaultValue={[new Date(todo.startDate), new Date(todo.dueDate)]}
+          required>
+        </Calendar>
+
+        <button onClick={(e) => { updateTodo(todo.id, editedTodo); setShow(false)}}> update todo </button>
+        <button onClick={() => setShow(false)}> Close</button>
+      </Modal>
     </>
   )
 }

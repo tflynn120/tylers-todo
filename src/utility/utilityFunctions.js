@@ -1,14 +1,12 @@
 import React, {useState} from 'react'
 
 export function restoreInitialState(setTitleValue, setStartDate, setDueDate, setCategory) {
-    console.log("it ran")
 }
 
 export const disableWeekends = ({activeStartDate, date, view }) =>
     date.getDay() === 0 || date.getDay() === 6;
 
 export const daysToCompleteTask = (deadline, startDate) => {
-    console.log("it ran");
     const diffInMs   = new Date(deadline) - new Date(startDate)
     let diffInDays = diffInMs / (1000 * 60 * 60 * 24);
     diffInDays = diffInDays.toFixed(0)
@@ -20,3 +18,7 @@ export const setDates = (startDate, dueDate, e) => {
     startDate(new Date(e[0]).toLocaleDateString(undefined, options));
     dueDate(new Date(e[1]).toLocaleDateString(undefined, options));
   }
+
+export const makeUpperCase = (text) => {
+    return text.toUpperCase();
+}

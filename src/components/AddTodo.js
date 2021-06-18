@@ -15,12 +15,14 @@ export default function AddTodo( props ) {
     const [category, setCategory] = useState("");
     const [startDate, setStartDate] = useState("");
     const [dueDate, setDueDate] = useState("");
+    const [activeStatus, setActiveStatus] = useState("");
+    const [description, setDescription] = useState("");
 
     const handleSubmit = (e) => {
       e.preventDefault();
       if (!titleValue & !dueDate)
         return;
-      props.addTodoFunction(titleValue, startDate, dueDate, category);
+      props.addTodoFunction(titleValue, startDate, dueDate, category, activeStatus, description);
       stateCleanup()
     };
 
@@ -29,6 +31,8 @@ export default function AddTodo( props ) {
       setStartDate("");
       setDueDate("");
       setCategory("");
+      setActiveStatus("");
+      setDescription("");
 
       //ask sam how to do this in utility
     }
@@ -67,7 +71,7 @@ export default function AddTodo( props ) {
 
     return (
       <form>
-        <label>title</label>
+        <label>Title: </label>
           <input
             type="text"
             className="input"
@@ -75,38 +79,97 @@ export default function AddTodo( props ) {
             onChange={e => setTitleValue(e.target.value)}
           />
 
-          <label>Type of skill</label>
-            <select
-              required
-              as="select"
-              onChange={e => setCategory(e.target.value)}>
+        <label>Description: </label>
+        <textarea value={description} onChange={e => setDescription(e.target.value)}></textarea>
 
-              <option
-                value="">
-                Select category
-              </option>
+        
+        <label>Type of skill</label>
 
-              <option
-                value="Technical Skills">
-                Technical Skills
-              </option>
+        <form required
+          as="select"
+          onChange={e => setCategory(e.target.value)}>
 
-              <option
-                value="Product Analyst Skills">
-                Product Analyst Skills
-              </option>
+          <input
+            type="radio"
+            id="Technical Skills"
+            name="Skillset"
+            value="Technical Skills"/>
 
-              <option
-                value="AND Contributions">
-                AND Contributions
-              </option>
+          <label
+            for="Technical Skills">Technical Skills
+          </label>
 
-              <option
-                value="Personal">
-                Personal
-              </option>
-            </select>
+          <input
+            type="radio"
+            id="Product Analyst"
+            name="Skillset"
+            value="Product Analyst"/>
 
+          <label
+            for="Product Analyst">Product Analyst
+          </label>
+
+          <input
+            type="radio"
+            id="AND Contribution"
+            name="Skillset"
+            value="AND Contribution"/>
+
+          <label
+            for="AND Contribution">AND Contribution
+          </label>
+
+          <input
+            type="radio"
+            id="Personal Skills"
+            name="Skillset"
+            value="Personal Skills"/>
+
+          <label
+            for="Personal Skills">Personal Skills
+          </label>
+
+
+          </form>
+
+          <label>STATUS</label>
+
+<form required
+  as="select"
+  onChange={e => setActiveStatus(e.target.value)}>
+
+  <input
+    type="radio"
+    id="Not started"
+    name="Skillset"
+    value="Not started"/>
+
+  <label
+    for="Not started">Not started
+  </label>
+
+  <label
+    for="In progress">In progress
+  </label>
+
+  <input
+    type="radio"
+    id="AND Contribution"
+    name="Skillset"
+    value="In progress"/>
+
+  <label
+    for="AND Contribution">Complete
+  </label>
+
+  <input
+    type="radio"
+    id="Personal Skills"
+    name="Skillset"
+    value="Complete"/>
+
+
+  </form>
             <Calendar
                 selectRange
                 onChange={e => setDates(setStartDate, setDueDate, e)}
@@ -116,8 +179,6 @@ export default function AddTodo( props ) {
             </Calendar>
 
             <p>Number of days to complete task: {daysToCompleteTask(dueDate, startDate)}</p>
-
-            <h2>Things learned example</h2>
 
       <button onClick={handleSubmit}> add</button>
       </form>
@@ -142,15 +203,6 @@ export default function AddTodo( props ) {
 //     // if (validated === true){
 //     e.preventDefault();
 
-//     db.collection('todos').add({
-//       todo: title,
-//       description: description,
-//       category: category,
-//       timestamp: new Date(),
-//       startDate: startDate,
-//       dueDate: dueDate,
-//       taskPriority: priority
-//     })
 //     clearState();
 //   }
 
