@@ -4,7 +4,7 @@ import React from 'react';
 export default function Sidebar() {
     return (
         <div className="col-3 h-100">
-            <div className="panel-container__side-menu side-menu h-100">
+            <div className="tile-container__side-menu side-menu h-100">
                 <ul className="side-menu__ul">
                     <li className="side-menu-ul__li">
                         <i class="fas fa-icon fa-border-all"/>

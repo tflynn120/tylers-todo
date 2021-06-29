@@ -1,0 +1,20 @@
+.col-container {
+    height: 90%;
+    overflow-y: scroll;
+  }
+
+.col-container-full {
+    height: 100%;
+    overflow: hidden;
+  }
+
+.col-container__headings {
+    font-family: $font-roboto-slab;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    display: block;
+  }
+
+  .col-3 {
+    position: inherit !important;
+  }

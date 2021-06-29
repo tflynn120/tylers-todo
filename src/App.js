@@ -1,22 +1,28 @@
 import React, {useState, useEffect} from 'react';
-import './App.css';
+import './App.scss';
+import './styles/index.scss';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '@fortawesome/fontawesome-free/js/all.js';
-import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
-import Todo from './components/Todo';
 import db from './Firebase/config';
-import styled from 'styled-components';
-import AddTodo from './components/AddTodo';
-import { Container } from 'react-bootstrap';
-import Modal from 'react-bootstrap/Modal';
-import Feedback from './components/Feedback';
 import Sidebar from './components/sidebar/Sidebar';
 import TileItem from './components/tile/TileItem';
+import Modal from 'react-bootstrap/Modal';
 
 
 function App() {
 
   const [todos, setTodos] = useState([]);
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
+  const filterActiveStatus = (todos, status) =>
+    todos.filter((todoItem) => todoItem.activeStatus === status);
+
+  const notStartedTodos = filterActiveStatus(todos, "Not started");
+  const inProgressTodos = filterActiveStatus(todos, "In progress");
+  const completedTodos = filterActiveStatus(todos, "Complete");
+
   const addTodo = (title, startDate, dueDate, category, activeStatus, description) => {
 
     const createdTodo = {
@@ -38,17 +44,40 @@ function App() {
       startDate: startDate,
       dueDate: dueDate,
       activeStatus: activeStatus,
-      description: description,
-      // taskPriority: priority
-      // description: description,
+      description: description
 
     })
   }
 
-  const completeTodo = (index) => {
-    const newTodos = [...todos];
-    newTodos[index].isComplete = (!newTodos[index].isComplete);
-    setTodos(newTodos);
+  const completeTodo = async (id) => {
+  let statusSelector = "default";
+  
+    const editedTodoList = todos.map(todo => {
+      if (id === todo.id) {
+
+        if (todo.activeStatus === "Not started") {
+          statusSelector = "In progress"
+          return {...todo.activeStatus = "In progress", ...todos}
+        }
+        else if (todo.activeStatus === "In progress") {
+          statusSelector = "Complete"
+          return {...todo.activeStatus = "Complete", ...todos}
+        }
+        else if (todo.activeStatus === "Complete") {
+          statusSelector = "In progress"
+          return {...todo.activeStatus = "In Progress", ...todos}
+        }
+        return todo;
+     };
+    })
+
+    try {
+      await db.collection('todos').doc(id).set({
+        activeStatus : statusSelector
+      }, { merge: true})
+    } catch (e) {
+      console.error("failed to update database")
+    }
   };
 
   const removeTodo = async (todo) => {
@@ -84,14 +113,17 @@ function App() {
     }
   }
 
-
-
-
+// const modalFunc = () => {
+//   console.log("run")
+//   return (
+//     <Modal show={show} />
+//   )
+// }
 
   useEffect(() => {
     let isCancelled = false;
     if (!isCancelled) {
-      
+
     db.collection('todos').orderBy('timestamp', 'desc').onSnapshot(snapshot => {
       setTodos(snapshot.docs.map(doc => ({
         id: doc.id,
@@ -104,19 +136,7 @@ function App() {
         activeStatus: doc.data().activeStatus,
         description: doc.data().description
       })))
-      //go through every single doc, get the todo field, and set that using setTodos
     })
-    console.log("ran");
-    // db.collection('projects').onSnapshot(snapshot => {
-    //   setProjects(snapshot.docs.map(doc => ({
-    //     id: doc.id,
-    //     project: doc.data().project,
-    //     projectDescription: doc.data().projectDescription,
-    //     testArray: doc.data().test
-
-    //   })))
-    //   //go through every single doc, get the todo field, and set that using setTodos
-    // })
   }
     return () => {
       isCancelled = true;
@@ -126,30 +146,47 @@ function App() {
   return (
     <>
     <div className="App">
-      
-    <div className="row panel-container h-100">
-      <Sidebar />
+      <div className="row panel-container h-100">
+        <Sidebar />
 
-      <div className="col-3 col-container-full">
-        <span className="col-container__headings">Not started</span>
-          <div className="col-container">
-
-            {todos.filter(todo => todo.activeStatus == "Not started").map(todo => (
-            <TileItem
-                todo={todo}
-                completeTodo={completeTodo}
-                removeTodo={removeTodo}
-                updateTodo={updateTodo}
-              />
-            ))}
+        <div className="col-3 col-container-full">
+          <span className="col-container__headings">Not started</span>
+            <div className="col-container">
+            {notStartedTodos.map((todo) => (
+              <TileItem
+                  todo={todo}
+                  completeTodo={completeTodo}
+                  removeTodo={removeTodo}
+                  updateTodo={updateTodo}
+                />
+              ))}
+          </div>
         </div>
-      </div>
 
-      <div className="col-3 col-container-full">
-        <span className="col-container__headings">In progress</span>
+        <div className="col-3 col-container-full">
+          <span className="col-container__headings">In progress</span>
+            <div className="col-container">
+            {inProgressTodos.map((todo) => (
+              <TileItem
+                  todo={todo}
+                  completeTodo={completeTodo}
+                  removeTodo={removeTodo}
+                  updateTodo={updateTodo}
+                />
+              ))}
+            </div>
+        </div>
+
+        <div className="col-3 col-container-full">
+          <button className="panel-container__add-item"
+           onClick={handleShow}
+           >
+            <i class="fas fa-plus"/>
+          </button>
+
+          <span className="col-container__headings">Completed</span>
           <div className="col-container">
-
-            {todos.filter(todo => todo.activeStatus == "In progress").map(todo => (
+            {completedTodos.map((todo) => (
             <TileItem
                 todo={todo}
                 completeTodo={completeTodo}
@@ -158,168 +195,11 @@ function App() {
               />
             ))}
           </div>
-      </div>
-
-      <div className="col-3 col-container-full">
-        <button className="panel-container__add-item">
-          <i class="fas fa-plus"/>
-        </button>
-
-        <span className="col-container__headings">Completed</span>
-        <div className="col-container">
-
-          {todos.filter(todo => todo.activeStatus == "Complete").map(todo => (
-          <TileItem
-              todo={todo}
-              completeTodo={completeTodo}
-              removeTodo={removeTodo}
-              updateTodo={updateTodo}
-            />
-          ))}
         </div>
-      </div>
-    </div>
-      <div className="col-12">
-        <Router>
-        {/* <nav>
-          <ul>
-            <li>
-              <Link to="/">Home</Link>
-            </li>
-            <li>
-              <Link to="/todos">todos</Link>
-            </li>
-            <li>
-              <Link to="/addTodos">Add todos</Link>
-            </li>
-          </ul>
-        </nav> */}
-
-          <Container>
-            <Switch>
-              {/* <Route path="/todos">
-                {todos.isComplete ? "" :
-              <>
-                <h2>Active Todos</h2>
-                {todos.map((todo) => (
-                  <Todo
-                    todo={todo}
-                    completeTodo={completeTodo}
-                    removeTodo={removeTodo}
-                    updateTodo={updateTodo}
-                  />
-                ))}
-                </>
-              }
-
-            <h2>Completed Todos</h2>
-              {/* {todos.isComplete ?
-              <>
-                {todos.map((todo, index) => (
-                  <Todo
-                    key={index}
-                    index={index}
-                    todo={todo}
-                    completeTodo={completeTodo}
-                    removeTodo={removeTodo}
-                    updateTodo={updateTodo}
-                  />
-                ))}
-                </>
-                : ""
-              } */}
-              {/* </Route> */}
-
-              <Route path="/feedback">
-                <Feedback />
-              </Route>
-
-              <Route path="/addTodos">
-                <AddTodo addTodoFunction={addTodo} />
-              </Route>
-            </Switch>
-          </Container>
-        </Router>
       </div>
     </div>
     </>
   );
 }
 
-const Li = styled.li`
-  display: inline;
-  font-size:18px;
-  color: red;
-  padding-right: 20px;
-`;
-
-const Ul = styled.ul`
-text-align: left;
-display: inherit;
-`;
-
 export default App;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

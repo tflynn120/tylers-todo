@@ -1,0 +1,45 @@
+.modal-content{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    height: 180px;
+    pointer-events: auto;
+    background-color: #F7F6F4;
+    background-clip: padding-box;
+    border: 1px solid #E4E5E7;
+    border-radius: .3rem;
+    outline: 0;
+    margin: 0 auto;
+}
+.modal-body{
+    font-size: 18px;
+}
+
+.modal-footer{
+    margin: 0 auto;
+    font-size: 14px;
+}
+
+
+/* modal title icon 
+margin: 0 auto;
+
+.button 1 {
+    display: inline-block;
+    position: absolute;
+    right: 0;
+    top: 0;
+} */
+
+.button--cancel{
+    border: 1px solid #E0E6EB;
+    background: white;
+    border-radius: 5px;
+}
+
+.button--delete{
+    background: #F22E5A;
+    color: white;
+    border: 1px solid #E0E6EB;
+}

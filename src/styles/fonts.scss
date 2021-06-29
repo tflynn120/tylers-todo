@@ -1,0 +1,18 @@
+$font-roboto-slab: 'Roboto Slab';
+$font-roboto: 'Roboto';
+
+html,
+h1,
+h2,
+h3,
+li,
+ul,
+button {
+  font-family: $font-roboto-slab, serif;
+}
+
+p,
+span {
+  font-family: $font-roboto;
+}
+

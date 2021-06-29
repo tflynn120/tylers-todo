@@ -2,6 +2,7 @@
 import React, {useState} from 'react'
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
+import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
@@ -17,6 +18,7 @@ export default function AddTodo( props ) {
     const [dueDate, setDueDate] = useState("");
     const [activeStatus, setActiveStatus] = useState("");
     const [description, setDescription] = useState("");
+    const [show, setShow] = useState(false);
 
     const handleSubmit = (e) => {
       e.preventDefault();
@@ -70,6 +72,8 @@ export default function AddTodo( props ) {
   // }
 
     return (
+
+      <Modal show={show} onHide={e => setShow(false)}>
       <form>
         <label>Title: </label>
           <input
@@ -182,6 +186,7 @@ export default function AddTodo( props ) {
 
       <button onClick={handleSubmit}> add</button>
       </form>
+      </Modal>
       );
 
 //   let [title, setTitle] = useState('');

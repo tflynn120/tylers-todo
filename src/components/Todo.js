@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import Modal from 'react-bootstrap/Modal';
 import styled from 'styled-components';
 import Calendar from 'react-calendar';
-import db from '../Firebase/config';
 import { disableWeekends, daysToCompleteTask, setDates} from '../utility/utilityFunctions';
 
 export default function Todo(props) {
