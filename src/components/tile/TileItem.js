@@ -1,29 +1,16 @@
-import React, {useState, useEffect, useRef} from 'react'
+import React, {useState} from 'react'
 import {makeUpperCase} from '../../utility/utilityFunctions';
 import Modal from 'react-bootstrap/Modal';
+import useComponentVisible from '../../Hooks/useComponentVisible';
 
 export default function TileItem(props) {
 
-const [menuVisibility, setMenuVisibility] = useState(false);
 const [show, setShow] = useState(false);
 const handleClose = () => setShow(false);
 const handleShow = () => setShow(true);
-const wrapperRef = useRef();
 
-
-useEffect(() => {
-    document.addEventListener("click", handleClickOutside, false);
-    return () => {
-      document.removeEventListener("click", handleClickOutside, false);
-    };
-  }, []);
-
-  const handleClickOutside = (event) => {
-    if (wrapperRef.current && wrapperRef.current.contains(event.target)){
-      setMenuVisibility(false);
-      console.log("inside")
-        }
-  };
+// Abstracts the logic for the ref, visibile component and setter into a reusable hook
+const { ref, isComponentVisible, setIsComponentVisible } = useComponentVisible(false);
 
   const removeSpaceFromString = (string) => {
     let formattedString = string
@@ -49,14 +36,16 @@ useEffect(() => {
       <>
         <div className="tile-container__panel">
           <h2 className="tile__heading">{props.todo.title}</h2>
-            <div className="tile__heading-menu" onClick={() => setMenuVisibility(true)}>
+            {/* Moved this ref a bit higher, it was a little too low in the component tree before! */}
+            {/* Also, ref={ref} now binds the ref to this dom element. ref.current is now this div */}
+            <div ref={ref} className="tile__heading-menu" onClick={() => setIsComponentVisible(true)}>
             <span>
               <span className="tile__heading-menu--circle"/>
               <span className="tile__heading-menu--circle"/>
               <span className="tile__heading-menu--circle"/>
             </span>
-                {menuVisibility && (
-                    <div className="tile__menu-open" ref={wrapperRef}>
+                {isComponentVisible && (
+                    <div className="tile__menu-open">
                         <ul className="tile__menu-open-list">
                             <li className="tile-menu-open-list__li" onClick={()=>{props.completeTodo(props.todo.id)}}>
                                 <i class="fas fa-check"/> {activeStatusText()}
