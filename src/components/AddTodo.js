@@ -2,12 +2,12 @@
 import React, {useState} from 'react'
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
-import Modal from 'react-bootstrap/Modal';
-import Form from 'react-bootstrap/Form';
-import Container from 'react-bootstrap/Container'
-import Row from 'react-bootstrap/Row'
-import Col from 'react-bootstrap/Col'
-import db from '../Firebase/config';
+// import Modal from 'react-bootstrap/Modal';
+// import Form from 'react-bootstrap/Form';
+// import Container from 'react-bootstrap/Container'
+// import Row from 'react-bootstrap/Row'
+// import Col from 'react-bootstrap/Col'
+// import db from '../Firebase/config';
 import {disableWeekends, daysToCompleteTask, setDates} from '../utility/utilityFunctions';
 
 export default function AddTodo( props ) {
@@ -22,10 +22,10 @@ export default function AddTodo( props ) {
 
     const handleSubmit = (e) => {
       e.preventDefault();
-      if (!titleValue & !dueDate)
-        return;
+      // if (!titleValue & !dueDate)
+      //   return;
       props.addTodoFunction(titleValue, startDate, dueDate, category, activeStatus, description);
-      stateCleanup()
+      // stateCleanup()
     };
 
     const stateCleanup = () => {
@@ -73,7 +73,7 @@ export default function AddTodo( props ) {
 
     return (
 
-      <Modal show={show} onHide={e => setShow(false)}>
+      // <Modal show={show} onHide={e => setShow(false)}>
       <form>
         <label>Title: </label>
           <input
@@ -186,7 +186,7 @@ export default function AddTodo( props ) {
 
       <button onClick={handleSubmit}> add</button>
       </form>
-      </Modal>
+      // </Modal>
       );
 
 //   let [title, setTitle] = useState('');

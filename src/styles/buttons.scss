@@ -7,3 +7,21 @@
     height: 35px;
     border: none;
   }
+
+.modal__button {
+    width: fit-content;
+    margin: 0 auto;
+    display: inline-block;
+    background-color: $color-white;
+    border: 1px solid #E0E6EB;
+    font-size: 14px;
+    margin-right: 10px;
+    padding: 4px 10px 4px 10px;
+    border-radius: 5px;
+}
+
+.modal__button--delete {
+    background-color: #F22E5A;
+    color: $color-white;
+    border: none;
+}
