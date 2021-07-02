@@ -22,3 +22,7 @@ export const setDates = (startDate, dueDate, e) => {
 export const makeUpperCase = (text) => {
     return text.toUpperCase();
 }
+
+export const makeBold = (text) => {
+    return <strong> {text} </strong>;
+}

@@ -7,6 +7,7 @@ import db from './Firebase/config';
 import Sidebar from './components/sidebar/Sidebar';
 import TileItem from './components/tile/TileItem';
 import Modal from 'react-bootstrap/Modal';
+import AddTodo from './components/AddTodo';
 
 
 function App() {
@@ -23,6 +24,8 @@ function App() {
   const inProgressTodos = filterActiveStatus(todos, "In progress");
   const completedTodos = filterActiveStatus(todos, "Complete");
 
+
+  console.log(todos);
   const addTodo = (title, startDate, dueDate, category, activeStatus, description) => {
 
     const createdTodo = {
@@ -146,6 +149,13 @@ function App() {
   return (
     <>
     <div className="App">
+      {/* <AddTodo addTodoFunction={addTodo}/> */}
+      <Modal size="lg" show={show} onHide={handleClose} >
+      <Modal.Title><i class="fas fa-exclamation-triangle fa__icon--exclamation"></i></Modal.Title>
+    <Modal.Body>Add todo}</Modal.Body>
+        <button className="modal__button" onClick={handleClose}>Cancel</button>
+        <button className="modal__button modal__button--delete" onClick={() =>{}}>Delete task</button>
+    </Modal>
       <div className="row panel-container h-100">
         <Sidebar />
 

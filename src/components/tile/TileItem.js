@@ -1,29 +1,14 @@
-import React, {useState, useEffect, useRef} from 'react'
-import {makeUpperCase} from '../../utility/utilityFunctions';
+import React, {useState} from 'react'
+import {makeUpperCase, makeBold} from '../../utility/utilityFunctions';
 import Modal from 'react-bootstrap/Modal';
+import useComponentVisible from '../../Hooks/useComponentVisible';
 
 export default function TileItem(props) {
 
-const [menuVisibility, setMenuVisibility] = useState(false);
 const [show, setShow] = useState(false);
 const handleClose = () => setShow(false);
 const handleShow = () => setShow(true);
-const wrapperRef = useRef();
-
-
-useEffect(() => {
-    document.addEventListener("click", handleClickOutside, false);
-    return () => {
-      document.removeEventListener("click", handleClickOutside, false);
-    };
-  }, []);
-
-  const handleClickOutside = (event) => {
-    if (wrapperRef.current && wrapperRef.current.contains(event.target)){
-      setMenuVisibility(false);
-      console.log("inside")
-        }
-  };
+const { ref, isComponentVisible, setIsComponentVisible } = useComponentVisible(false);
 
   const removeSpaceFromString = (string) => {
     let formattedString = string
@@ -34,7 +19,7 @@ useEffect(() => {
   const activeStatusText = () => {
     let activeStatus = props.todo.activeStatus;
 
-    if (activeStatus === "Not started "){
+    if (activeStatus === "Not started"){
       return "Mark as in progress";
     }
     else if (activeStatus === "In progress") {
@@ -49,19 +34,22 @@ useEffect(() => {
       <>
         <div className="tile-container__panel">
           <h2 className="tile__heading">{props.todo.title}</h2>
-            <div className="tile__heading-menu" onClick={() => setMenuVisibility(true)}>
+            <div ref={ref} className="tile__heading-menu" onClick={() => setIsComponentVisible(true)}>
             <span>
               <span className="tile__heading-menu--circle"/>
               <span className="tile__heading-menu--circle"/>
               <span className="tile__heading-menu--circle"/>
             </span>
-                {menuVisibility && (
-                    <div className="tile__menu-open" ref={wrapperRef}>
+
+            {isComponentVisible && (
+                    <div className="tile__menu-open">
                         <ul className="tile__menu-open-list">
                             <li className="tile-menu-open-list__li" onClick={()=>{props.completeTodo(props.todo.id)}}>
                                 <i class="fas fa-check"/> {activeStatusText()}
                             </li>
-                            <li className="tile-menu-open-list__li"><i class="far fa-edit"></i> Edit</li>
+                            <li className="tile-menu-open-list__li">
+                              <i class="far fa-edit"></i>Edit
+                            </li>
                             <li className="tile-menu-open-list__li" onClick={handleShow}>
                               <i class="far fa-trash-alt"/> Delete</li>
                         </ul>
@@ -75,12 +63,11 @@ useEffect(() => {
           <span className="tile__days-left">2 days left</span>
       </div>
 
-    <Modal show={show} onHide={handleClose} closeButton>
-      <Modal.Title><i class="fas fa-exclamation-triangle"></i></Modal.Title>
-    <Modal.Body>Delete task {props.todo.title}</Modal.Body>
-      <button>Cancel</button>
-      <button>Delete task</button>
-      
+    <Modal className="delete-modal" size="sm" show={show} onHide={handleClose} >
+      <Modal.Title><i class="fas fa-exclamation-triangle fa__icon--exclamation"></i></Modal.Title>
+    <Modal.Body>Delete task {makeBold (props.todo.title) }</Modal.Body>
+        <button className="modal__button" onClick={handleClose}>Cancel</button>
+        <button className="modal__button modal__button--delete" onClick={() =>{ props.removeTodo(props.todo); handleClose()}}>Delete task</button>
     </Modal>
     </>
     )
